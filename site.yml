@@ -65,6 +65,12 @@
       extra_opts:
       - --strip-components=1
 
+  # Quick fix to generate demo certificates
+  - shell:
+      cmd: sudo -u opensearch bash ./plugins/opensearch-security/tools/install_demo_configuration.sh -y
+      chdir: /opt/opensearch-1.0.1
+      creates: /opt/opensearch-1.0.1/config/esnode.pem
+
   - template:
       src: dashboards-config.yml.j2
       dest: /opt/opensearch-dashboards-1.0.1/config/opensearch_dashboards.yml
@@ -91,7 +97,6 @@
     tags:
     - dev
 
-  # TODO: fix autostart on reboot
   - systemd:
       state: started
       enabled: yes
