@@ -1,0 +1,5 @@
+---
+- name: restart opensearch dashboards
+  service:
+    name: opensearch-dashboards
+    state: restarted
