@@ -15,13 +15,13 @@
 # Use a descriptive name for your cluster:
 #
 # TODO: parameterize
-cluster.name: opensearch
+cluster.name: {{ opensearch_cluster_name }}
 #
 # ------------------------------------ Node ------------------------------------
 #
 # Use a descriptive name for the node:
 #
-node.name: {{ ansible_hostname }}
+node.name: {{ opensearch_node_name }}
 #
 # Add custom attributes to the node:
 #
@@ -54,11 +54,11 @@ node.name: {{ ansible_hostname }}
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
 # TODO: move host to group vars
-network.host: {{ ansible_default_ipv4.address }}
+network.host: {{ opensearch_network_host }}
 #
 # Set a custom port for HTTP:
 #
-#http.port: 9200
+http.port: {{ opensearch_http_port }}
 #
 # For more information, consult the network module documentation.
 #
@@ -67,11 +67,11 @@ network.host: {{ ansible_default_ipv4.address }}
 # Pass an initial list of hosts to perform discovery when this node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.seed_hosts: ["{{ groups['opensearch'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join('", "') }}"]
+discovery.seed_hosts: ["{{ opensearch_discovery_seed_hosts | join('", "') }}"]
 #
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 #
-cluster.initial_master_nodes: ["{{ hostvars[ groups['opensearch'][0] ].ansible_hostname }}"]
+cluster.initial_master_nodes: ["{{ opensearch_cluster_initial_master_nodes | join('", "') }}"]
 #
 # For more information, consult the discovery and cluster formation module documentation.
 #
@@ -112,3 +112,5 @@ plugins.security.system_indices.enabled: true
 plugins.security.system_indices.indices: [".opendistro-alerting-config", ".opendistro-alerting-alert*", ".opendistro-anomaly-results*", ".opendistro-anomaly-detector*", ".opendistro-anomaly-checkpoints", ".opendistro-anomaly-detection-state", ".opendistro-reports-*", ".opendistro-notifications-*", ".opendistro-notebooks", ".opendistro-asynchronous-search-response*"]
 node.max_local_storage_nodes: 3
 ######## End OpenSearch Security Demo Configuration ########
+
+{{ opensearch_extra_options }}

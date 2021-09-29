@@ -1,0 +1,30 @@
+opensearch_version: "1.0.1"
+
+opensearch_archive_filename: "opensearch-{{ opensearch_version }}-linux-x64.tar.gz"
+opensearch_download_url: "https://artifacts.opensearch.org/releases/bundle/opensearch/{{ opensearch_version }}/{{ opensearch_archive_filename }}"
+
+opensearch_install_dir: "/opt/opensearch-{{ opensearch_version }}"
+
+opensearch_user: opensearch
+opensearch_group: opensearch
+
+opensearch_network_host: "{{ ansible_default_ipv4.address }}"
+opensearch_http_port: "9200"
+
+opensearch_cluster_name: opensearch
+opensearch_node_name: "{{ ansible_hostname }}"
+
+# Add any option to Opensearch configuration. Example:
+# opensearch_extra_options: |
+#   some.option: true
+#   another.option: false
+opensearch_extra_options: ""
+
+# opensearch_discovery_seed_hosts: "{{ groups['opensearch'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) }}"
+opensearch_discovery_seed_hosts:
+- "{{ opensearch_network_host }}"
+
+# opensearch_cluster_initial_master_nodes:
+# - "{{ hostvars[ groups['opensearch'][0] ].ansible_hostname }}"
+opensearch_cluster_initial_master_nodes:
+- "{{ ansible_hostname }}"
