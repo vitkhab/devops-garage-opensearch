@@ -2,11 +2,11 @@
 driver:
   name: delegated
 
-# lint: |
-#   set -e
-#   yamllint .
-#   flake8
-#   ansible-lint
+lint: |
+  set -e
+  yamllint .
+  flake8
+  ansible-lint
 
 platforms:
 - name: opensearch

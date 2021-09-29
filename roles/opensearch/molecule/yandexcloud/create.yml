@@ -38,7 +38,7 @@
 
   - debug:
       var: yc_instances.results
-    when: "{{ lookup('env', 'MOLECULE_DEBUG') | bool }}"
+    when: lookup('env', 'MOLECULE_DEBUG') | bool
 
   # Mandatory configuration for Molecule to function.
   - name: Populate instance config dict
@@ -54,7 +54,7 @@
 
   - debug:
       var: instance_config_dict
-    when: "{{ lookup('env', 'MOLECULE_DEBUG') | bool }}"
+    when: lookup('env', 'MOLECULE_DEBUG') | bool
   
   - name: Convert instance config dict to a list
     set_fact:

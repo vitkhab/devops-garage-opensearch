@@ -4,70 +4,70 @@
 #  gather_facts: false
   tasks:
 
-    - name: Include role default vars
-      include_vars:
-        dir: ../../defaults
+  - name: Include role default vars
+    include_vars:
+      dir: ../../defaults
 
-    - name: Get ElasticSearch info
-      uri:
-        url: "{{ opensearch_address }}"
-        validate_certs: false
-        method: GET
-        user: admin
-        password: admin
-        status_code: 200
-      register: uri_result
-      until: uri_result is not failed
-      retries: 12
-      delay: 10
+  - name: Get ElasticSearch info
+    uri:
+      url: "{{ opensearch_address }}"
+      validate_certs: false
+      method: GET
+      user: admin
+      password: admin
+      status_code: 200
+    register: uri_result
+    until: uri_result is not failed
+    retries: 12
+    delay: 10
 
-    - name: Get ElasticSearch info
-      assert:
-        that:
-          - uri_result.json.cluster_name == 'opensearch'
-          - "uri_result.json.version.number == '1.0.0'"
-        quiet: true
+  - name: Get ElasticSearch info
+    assert:
+      that:
+      - "uri_result.json.cluster_name == '{{ opensearch_cluster_name }}'"
+      - "uri_result.json.version.number == '1.0.0'"
+      quiet: true
 
-    - name: Get ElasticSearch info
-      uri:
-        url: '{{ opensearch_address }}/_cat/nodes?v&format=json'
-        validate_certs: false
-        method: GET
-        user: admin
-        password: admin
-        status_code: 200
-      register: nodes_result
-      until: nodes_result is not failed
-      retries: 12
-      delay: 10
-    - name: Get ElasticSearch info
-      assert:
-        that:
-          - nodes_result.json|length == 1
-        quiet: true
+  - name: Get ElasticSearch info
+    uri:
+      url: '{{ opensearch_address }}/_cat/nodes?v&format=json'
+      validate_certs: false
+      method: GET
+      user: admin
+      password: admin
+      status_code: 200
+    register: nodes_result
+    until: nodes_result is not failed
+    retries: 12
+    delay: 10
+  - name: Get ElasticSearch info
+    assert:
+      that:
+      - nodes_result.json|length == 1
+      quiet: true
 
 
-    - name: Get ElasticSearch info
-      uri:
-        url: '{{ opensearch_address }}/_cat/plugins?v&format=json'
-        validate_certs: false
-        method: GET
-        user: admin
-        password: admin
-        status_code: 200
-      register: plugins_result
-      until: plugins_result is not failed
-      retries: 12
-      delay: 10
-    - name: Get ElasticSearch info
-      assert:
-        that:
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-anomaly-detection')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-job-scheduler')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-knn')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-alerting')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-index-management')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-performance-analyzer')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-security')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-sql')"
-        quiet: true
+  - name: Get ElasticSearch info
+    uri:
+      url: '{{ opensearch_address }}/_cat/plugins?v&format=json'
+      validate_certs: false
+      method: GET
+      user: admin
+      password: admin
+      status_code: 200
+    register: plugins_result
+    until: plugins_result is not failed
+    retries: 12
+    delay: 10
+  - name: Get ElasticSearch info
+    assert:
+      that:
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-anomaly-detection')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-job-scheduler')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-knn')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-alerting')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-index-management')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-performance-analyzer')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-security')"
+      - "plugins_result.json | selectattr('component', 'eq', 'opensearch-sql')"
+      quiet: true

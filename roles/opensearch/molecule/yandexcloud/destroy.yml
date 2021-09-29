@@ -27,4 +27,4 @@
 
   - debug:
       var: yc_instances
-    when: "{{ lookup('env', 'MOLECULE_DEBUG') | bool }}"
+    when: lookup('env', 'MOLECULE_DEBUG') | bool
