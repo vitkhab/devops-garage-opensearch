@@ -19,6 +19,9 @@ platforms:
 
 provisioner:
   name: ansible
+  inventory:
+    links:
+      group_vars: ./group_vars/
   playbooks:
     converge: playbook.yml
     #prepare: prepare.yml

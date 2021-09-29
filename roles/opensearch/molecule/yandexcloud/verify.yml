@@ -1,7 +1,7 @@
 ---
 - name: Verify
   hosts: all
-  gather_facts: false
+#  gather_facts: false
   tasks:
 
     - name: Include role default vars
@@ -10,7 +10,7 @@
 
     - name: Get ElasticSearch info
       uri:
-        url: https://localhost:9200
+        url: "{{ opensearch_address }}"
         validate_certs: false
         method: GET
         user: admin
@@ -20,16 +20,17 @@
       until: uri_result is not failed
       retries: 12
       delay: 10
+
     - name: Get ElasticSearch info
       assert:
         that:
-          - uri_result.json.cluster_name == 'elasticsearch'
-          - "uri_result.json.version.number == '{{ opendistro_elasticsearch_version }}'"
+          - uri_result.json.cluster_name == 'opensearch'
+          - "uri_result.json.version.number == '1.0.0'"
         quiet: true
 
     - name: Get ElasticSearch info
       uri:
-        url: 'https://localhost:9200/_cat/nodes?v&format=json'
+        url: '{{ opensearch_address }}/_cat/nodes?v&format=json'
         validate_certs: false
         method: GET
         user: admin
@@ -48,7 +49,7 @@
 
     - name: Get ElasticSearch info
       uri:
-        url: 'https://localhost:9200/_cat/plugins?v&format=json'
+        url: '{{ opensearch_address }}/_cat/plugins?v&format=json'
         validate_certs: false
         method: GET
         user: admin
@@ -61,31 +62,12 @@
     - name: Get ElasticSearch info
       assert:
         that:
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro-anomaly-detection')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro-job-scheduler')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro-knn')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro_alerting')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro_index_management')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro_performance_analyzer')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro_security')"
-          - "plugins_result.json | selectattr('component', 'eq', 'opendistro_sql')"
-        quiet: true
-
-    - name: Get Kibana info
-      uri:
-        url: 'http://localhost:5601/api/status'
-        validate_certs: false
-        method: GET
-        user: admin
-        password: admin
-        status_code: 200
-      register: kibana_result
-      until: kibana_result is not failed
-      retries: 12
-      delay: 10
-    - name: Get Kibana info
-      assert:
-        that:
-          - "kibana_result.json.version.number == '{{ opendistro_elasticsearch_version }}'"
-          - "kibana_result.json.status.overall.state == 'green'"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-anomaly-detection')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-job-scheduler')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-knn')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-alerting')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-index-management')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-performance-analyzer')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-security')"
+          - "plugins_result.json | selectattr('component', 'eq', 'opensearch-sql')"
         quiet: true

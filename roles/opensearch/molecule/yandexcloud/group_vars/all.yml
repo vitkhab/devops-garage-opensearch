@@ -1,0 +1,2 @@
+opensearch_listen_ip: "{{ ansible_default_ipv4.address }}"
+opensearch_address: "https://{{ opensearch_listen_ip }}:9200"
