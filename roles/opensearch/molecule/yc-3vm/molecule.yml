@@ -1,0 +1,47 @@
+---
+driver:
+  name: delegated
+
+lint: |
+  set -e
+  yamllint .
+  flake8
+  ansible-lint
+
+platforms:
+- name: opensearch-1
+  image_family: ubuntu-2004-lts
+  # TODO: parameterize
+  subnet_id: e9b2h73e46hu93lav8u2
+  # TODO: define cpu, ram, hdd
+  groups:
+  - opensearch
+- name: opensearch-2
+  image_family: ubuntu-2004-lts
+  # TODO: parameterize
+  subnet_id: e9b2h73e46hu93lav8u2
+  # TODO: define cpu, ram, hdd
+  groups:
+  - opensearch
+- name: opensearch-3
+  image_family: ubuntu-2004-lts
+  # TODO: parameterize
+  subnet_id: e9b2h73e46hu93lav8u2
+  # TODO: define cpu, ram, hdd
+  groups:
+  - opensearch
+
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      group_vars: ./group_vars/
+  playbooks:
+    converge: playbook.yml
+    #prepare: prepare.yml
+    create: create.yml
+    destroy: destroy.yml
+    verify: verify.yml
+
+scenario:
+  name: yc-3vm
