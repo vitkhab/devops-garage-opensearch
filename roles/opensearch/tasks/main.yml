@@ -5,9 +5,14 @@
     sysctl_set: yes
     reload: yes
 
+- stat:
+    path: /opt/opensearch-1.0.1/opensearch-tar-install.sh
+  register: stat_result
+
 - get_url:
     url: https://artifacts.opensearch.org/releases/bundle/opensearch/1.0.1/opensearch-1.0.1-linux-x64.tar.gz
     dest: /tmp/opensearch-1.0.1-linux-x64.tar.gz
+  when: not stat_result.stat.exists
 
 - group:
     name: opensearch
@@ -28,6 +33,7 @@
     dest: /opt/opensearch-1.0.1
     owner: opensearch
     group: opensearch
+    creates: /opt/opensearch-1.0.1/opensearch-tar-install.sh
     remote_src: yes
     extra_opts:
     - --strip-components=1
