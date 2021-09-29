@@ -1,0 +1,30 @@
+---
+- name: Destroy Yandex.Cloud VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: Check env vars are set
+    fail:
+      msg: "Env variable {{ item }} is not defined"
+    when: not lookup('env', item)
+    no_log: false
+    loop:
+    - "YC_TOKEN"
+    - "YC_FOLDER_ID"
+
+  - name: Destroy VM
+    ycc_vm:
+      auth:
+        # TODO: Parameterize auth file location
+        service_account_key: '{{lookup("file", "~/sa.json")}}'
+      name: "{{ item.name }}"
+      folder_id: '{{lookup("env", "YC_FOLDER_ID")}}'
+      state: absent
+    loop: "{{ molecule_yml.platforms }}"
+    register: yc_instances
+
+  - debug:
+      var: yc_instances
+    when: "{{ lookup('env', 'MOLECULE_DEBUG') | bool }}"
